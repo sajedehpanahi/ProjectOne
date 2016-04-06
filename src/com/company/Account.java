@@ -10,7 +10,6 @@ public abstract class Account {
     private int durationDays;
     private BigDecimal depositBalance;
     private BigDecimal profit=new BigDecimal("0");
-    private String depositType;
     private String errorMessage=null;
 
     public int getCustomerNumber(){
@@ -49,72 +48,27 @@ public abstract class Account {
         return depositBalance;
     }
 
-    public void setDepositBalance(BigDecimal balance){
-        int flag=0;
-        int result = balance.compareTo(new BigDecimal("0"));
-        try{
-            if(result == 0 || result == 1 )
-                depositBalance = balance;
-            else if(result == -1) {
-                flag = 1;
-                throw new Exception() ;
-            }
-        }catch(Exception e){
-            if(flag==1)
-                errorMessage="Deposit Balance Cannot Be Negative!";
+    public void setDepositBalance(BigDecimal balance) throws ArgumentOutOfRange {
+
+        if (balance.compareTo(new BigDecimal(0)) < 0){
+            throw new ArgumentOutOfRange("Deposit Balance must be positive");
         }
-    }
-
-    public BigDecimal getProfit(){
-
-        return profit;
-    }
-
-    public void setProfit(BigDecimal prf){
-        profit = prf;
-    }
-
-    public String getDepositType(){
-        return depositType;
-    }
-
-    public void setDepositType(String type){
-        type = type.toLowerCase();
-        try {
-            if (type == "qarz" || type == "shortterm" || type == "longterm")
-                depositType = type;
-            else {
-                throw new Exception() ;
-            }
-        }catch (Exception e){
-            errorMessage = "Unknown Deopsit Type!";
-        }
+        this.depositBalance = balance;
     }
 
     public String getErrorMessage(){
         return errorMessage;
     }
 
-   /* private void setErrorMessage(String msg){
-        errorMessage = msg;
-    }*/
-
     public Account(){
     }
 
-    public Account(int customerNumber,int durationDays,BigDecimal depositBalance, String depositType){
-        this.customerNumber=customerNumber;
-        this.durationDays=durationDays;
-        this.depositBalance=depositBalance;
-        this.depositType=depositType;
-    }
+    public BigDecimal calculateProfit(){
 
-    public BigDecimal calulateDeposit(){
-        //do something if errormessage != null
 
         BigDecimal iR = getInterestRate();
         BigDecimal dD = new BigDecimal(durationDays);
-        profit=((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500));
+        profit=((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500) , 4);
 
         return profit;
     }
