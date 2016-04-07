@@ -1,76 +1,96 @@
 package com.company;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
- * Created by DotinSchool2 on 4/6/2016.
+ * <h1>Abstract Account Class</h1>
+ *
+ * @author Sajedeh Panahi
+ * @version 1.0
+ * @since 4/6/2016.
  */
 public abstract class Account {
 
     private int customerNumber;
     private int durationDays;
     private BigDecimal depositBalance;
-    private BigDecimal profit=new BigDecimal("0");
-    private String errorMessage=null;
+    private String errorMessage=null; /// deleteee
 
+    /**
+     *
+     * @return int customer number
+     */
     public int getCustomerNumber(){
         return customerNumber;
     }
 
+    /**
+     *
+     * @param number customer number to set (int)
+     */
     public void setCustomerNumber(int number){
         customerNumber=number;
     }
 
+    /**
+     *
+     * @return duration days (int)
+     */
     public int getDurationDays(){
         return durationDays;
     }
 
-    public void setDurationDays(int days){
-         int flag=0;
-        try{
-            if(days>0)
-                durationDays = days;
-            else if(days == 0){
-                flag=1;
-                throw new Exception() ;
-            }else if(days < 0){
-                flag=2;
-                throw new Exception() ;
-            }
-        }catch(Exception e){
-            if(flag==1)
-                errorMessage="Duration Days Cannot Be 0!";
-            else if(flag == 2)
-                errorMessage="Duration Days Cannot Be Negative!";
-        }
+    /**
+     *
+     * @param durationDays is duration  days in int that must be greater than 0
+     * @throws ArgumentOutOfRange on input error
+     */
+    public void setDurationDays(int durationDays) throws ArgumentOutOfRange {
+
+        if(durationDays > 0)
+            this.durationDays = durationDays;
+        else
+            throw new ArgumentOutOfRange("Duration Days must be greater than zero!");
     }
 
+    /**
+     *
+     * @return deposit balance in BigDecimal( to handle very huge balance)
+     */
     public BigDecimal getDepositBalance(){
         return depositBalance;
     }
 
+    /**
+     *
+     * @param balance deposit balance to set
+     * @throws ArgumentOutOfRange Deposit Balance must be positive
+     */
     public void setDepositBalance(BigDecimal balance) throws ArgumentOutOfRange {
 
         if (balance.compareTo(new BigDecimal(0)) < 0){
-            throw new ArgumentOutOfRange("Deposit Balance must be positive");
+            throw new ArgumentOutOfRange("Deposit Balance must be positive!");
         }
         this.depositBalance = balance;
     }
 
-    public String getErrorMessage(){
-        return errorMessage;
-    }
 
+    /**
+     * class constructor
+     */
     public Account(){
     }
 
+    /**
+     *Rounding mode to round towards the "nearest neighbor" unless both neighbors are equidistant, in which case, round towards the even neighbor
+     * @return calculated profit in BigDecimal with 4
+     */
     public BigDecimal calculateProfit(){
-
 
         BigDecimal iR = getInterestRate();
         BigDecimal dD = new BigDecimal(durationDays);
-        profit=((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500) , 4);
 
-        return profit;
+        return ((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500) , RoundingMode.HALF_EVEN);
     }
 
     public abstract BigDecimal getInterestRate();

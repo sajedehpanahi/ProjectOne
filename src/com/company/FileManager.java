@@ -43,7 +43,7 @@ public class FileManager {
                     case XMLStreamConstants.START_ELEMENT:
                         StartElement startElement = event.asStartElement();
                         String qName = startElement.getName().getLocalPart();
-                        if (qName.equalsIgnoreCase("customernumber")) {
+                        if (qName.equalsIgnoreCase("customerNumber")) {
                             bCustomerNumber = true;
                         } else if (qName.equalsIgnoreCase("depositType")) {
                               bDepositType = true;
@@ -64,7 +64,6 @@ public class FileManager {
                         }
                         if(bDepositType){
                             System.out.println("deposit type: "+ characters.getData());
-                            //refleaction
                             depositType = characters.getData();
                             bDepositType = false;
                         }
@@ -82,7 +81,7 @@ public class FileManager {
                     case  XMLStreamConstants.END_ELEMENT:
                         EndElement endElement = event.asEndElement();
                         if(endElement.getName().getLocalPart().equalsIgnoreCase("deposit")){
-                            Class cls = Class.forName("com.company." + depositType);
+                            Class<?> cls = Class.forName("com.company." + depositType);
                             Object obj = cls.newInstance();
 
                             Method setDurationDays = cls.getSuperclass().getDeclaredMethod("setDurationDays" , new Class[] {Integer.TYPE});
