@@ -9,11 +9,21 @@ import java.math.RoundingMode;
  * @version 1.0
  * @since 4/6/2016.
  */
-public abstract class Account implements Comparable {
+public abstract class Deposit implements Comparable<Deposit> {
 
     private int customerNumber;
     private int durationDays;
     private BigDecimal depositBalance;
+
+    static Deposit createDeposit(String depositType, int customerNumber, int durationDays, BigDecimal depositBalance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ArgumentOutOfRange {
+        Class<?> cls = Class.forName("com.company." + depositType);
+        Deposit deposit = (Deposit)cls.newInstance();
+
+        deposit.setCustomerNumber(customerNumber);
+        deposit.setDepositBalance(depositBalance);
+        deposit.setDurationDays(durationDays);
+        return deposit;
+    }
 
     public int getCustomerNumber(){
         return customerNumber;
@@ -61,7 +71,7 @@ public abstract class Account implements Comparable {
     }
 
 
-    public Account(){
+    public Deposit(){
     }
 
     /**
@@ -77,9 +87,8 @@ public abstract class Account implements Comparable {
         return ((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500) , RoundingMode.HALF_EVEN);
     }
 
-    public int compareTo(Object obj){
-        Account acc = (Account)obj;
-            return calculateProfit().compareTo((acc.calculateProfit()));
+    public int compareTo(Deposit deposit) {
+        return calculateProfit().compareTo((deposit.calculateProfit()));
     }
 
     public abstract BigDecimal getInterestRate();

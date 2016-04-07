@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * @version 1.0
  * @since 4/6/2016.
  */
-public class LongTerm extends Account {
+public class LongTerm extends Deposit {
     /**
      *
      * @return BigDecimal This returns long term deposit type interest rate

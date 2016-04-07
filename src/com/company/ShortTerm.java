@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * @version 1.0
  * @since 4/6/2016.
  */
-public class ShortTerm extends Account{
+public class ShortTerm extends Deposit {
     /**
      *
      * @return BigDecimal This returns short term deposit type interest rate

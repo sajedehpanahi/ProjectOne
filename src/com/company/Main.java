@@ -2,10 +2,9 @@ package com.company;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Main {
 
@@ -13,18 +12,11 @@ public class Main {
 
         FileManager fm = new FileManager();
         try {
-            ArrayList<Account> accounts =fm.parseDocument();
+            List<Deposit> deposits =fm.parseDocument();
 
-            Collections.sort(accounts, Collections.reverseOrder());
+            Collections.sort(deposits, Collections.reverseOrder());
 
-            fm.writeOutputFile(accounts,"output.txt");
-
-
-            for ( Account account : accounts){
-                System.out.println(account.getCustomerNumber() + "#" + account.calculateProfit());
-            }
-
-
+            fm.writeOutputFile(deposits,"output.txt");
 
         } catch (ClassNotFoundException e) {
             System.out.println("unknown deposit type");

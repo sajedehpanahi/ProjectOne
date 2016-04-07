@@ -9,6 +9,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h1>File Manager Class</h1>
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  */
 public class FileManager {
 
-    public ArrayList<Account> parseDocument() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, ArgumentOutOfRange {
+    public List<Deposit> parseDocument() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, ArgumentOutOfRange {
 
         boolean bCustomerNumber=false;
         boolean bDepositType=false;
@@ -30,7 +31,7 @@ public class FileManager {
 
 
 
-        ArrayList<Account> list = new ArrayList<Account>();
+        List<Deposit> list = new ArrayList<Deposit>();
 
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -48,14 +49,14 @@ public class FileManager {
                     case XMLStreamConstants.START_ELEMENT:
                         StartElement startElement = event.asStartElement();
                         String qName = startElement.getName().getLocalPart();
-                        if (qName.equalsIgnoreCase("customerNumber")) {
+                        if ("customerNumber".equalsIgnoreCase(qName)) {
                             bCustomerNumber = true;
-                        } else if (qName.equalsIgnoreCase("depositType")) {
+                        } else if ("depositType".equalsIgnoreCase(qName)) {
                               bDepositType = true;
-                        } else if (qName.equalsIgnoreCase("depositBalance")) {
+                        } else if ("depositBalance".equalsIgnoreCase(qName)) {
                             bDepositBalance = true;
                         }
-                        else if (qName.equalsIgnoreCase("durationInDays")) {
+                        else if ("durationInDays".equalsIgnoreCase(qName)) {
                             bDurationDays = true;
                         }
                         break;
@@ -63,36 +64,26 @@ public class FileManager {
                         Characters characters = event.asCharacters();
 
                         if(bCustomerNumber){
-                            System.out.println("customer number: "+ characters.getData());
                             bCustomerNumber = false;
                             customerNumber = Integer.parseInt(characters.getData().trim());
                         }
                         if(bDepositType){
-                            System.out.println("deposit type: "+ characters.getData());
                             depositType = characters.getData();
                             bDepositType = false;
                         }
                         if(bDepositBalance){
-                            System.out.println("deposit balance: "+ characters.getData());
                             depositBalance = new BigDecimal(characters.getData().trim());
                             bDepositBalance = false;
                         }
                         if(bDurationDays){
-                            System.out.println("duration days: "+ characters.getData());
                             durationDays = Integer.parseInt(characters.getData().trim());
                             bDurationDays = false;
                         }
                         break;
                     case  XMLStreamConstants.END_ELEMENT:
                         EndElement endElement = event.asEndElement();
-                        if(endElement.getName().getLocalPart().equalsIgnoreCase("deposit")){
-                            Class<?> cls = Class.forName("com.company." + depositType);
-                            Account account = (Account)cls.newInstance();
-
-                            account.setCustomerNumber(customerNumber);
-                            account.setDepositBalance(depositBalance);
-                            account.setDurationDays(durationDays);
-                            list.add(account);
+                        if("deposit".equalsIgnoreCase(endElement.getName().getLocalPart())){
+                            list.add(Deposit.createDeposit(depositType, customerNumber, durationDays, depositBalance));
                         }
                         break;
                 }
@@ -105,7 +96,7 @@ public class FileManager {
         return list;
     }
 
-    public void writeOutputFile(ArrayList<Account> accounts , String path) throws IOException {
+    public void writeOutputFile(List<Deposit> deposits, String path) throws IOException {
 
         File file = new File(path);
         file.createNewFile();
@@ -113,8 +104,9 @@ public class FileManager {
         FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-        for(Account account : accounts)
-            bufferedWriter.write(account.getCustomerNumber() + "#" + account.calculateProfit() + "\n");
+        for(Deposit deposit : deposits) {
+            bufferedWriter.write(deposit.getCustomerNumber() + "#" + deposit.calculateProfit() + "\n");
+        }
 
         bufferedWriter.close();
 

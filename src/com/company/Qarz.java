@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * @version 1.0
  * @since 4/6/2016.
  */
-public class Qarz extends Account {
+public class Qarz extends Deposit {
     /**
      *
      * @return BigDecimal This returns zero
