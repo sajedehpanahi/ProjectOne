@@ -7,7 +7,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.events.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -105,4 +104,22 @@ public class FileManager {
         }
         return list;
     }
+
+    public void writeOutputFile(ArrayList<Account> accounts , String path) throws IOException {
+
+        File file = new File(path);
+        file.createNewFile();
+
+        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        for(Account account : accounts)
+            bufferedWriter.write(account.getCustomerNumber() + "#" + account.calculateProfit() + "\n");
+
+        bufferedWriter.close();
+
+
+    }
+
+
 }

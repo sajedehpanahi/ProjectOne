@@ -1,5 +1,6 @@
 package com.company;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -15,6 +16,9 @@ public class Main {
             ArrayList<Account> accounts =fm.parseDocument();
 
             Collections.sort(accounts, Collections.reverseOrder());
+
+            fm.writeOutputFile(accounts,"output.txt");
+
 
             for ( Account account : accounts){
                 System.out.println(account.getCustomerNumber() + "#" + account.calculateProfit());
@@ -34,6 +38,8 @@ public class Main {
             e.printStackTrace();
         } catch (ArgumentOutOfRange argumentOutOfRange) {
             argumentOutOfRange.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
