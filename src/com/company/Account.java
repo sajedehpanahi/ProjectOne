@@ -9,33 +9,20 @@ import java.math.RoundingMode;
  * @version 1.0
  * @since 4/6/2016.
  */
-public abstract class Account {
+public abstract class Account implements Comparable {
 
     private int customerNumber;
     private int durationDays;
     private BigDecimal depositBalance;
-    private String errorMessage=null; /// deleteee
 
-    /**
-     *
-     * @return int customer number
-     */
     public int getCustomerNumber(){
         return customerNumber;
     }
 
-    /**
-     *
-     * @param number customer number to set (int)
-     */
     public void setCustomerNumber(int number){
         customerNumber=number;
     }
 
-    /**
-     *
-     * @return duration days (int)
-     */
     public int getDurationDays(){
         return durationDays;
     }
@@ -62,7 +49,6 @@ public abstract class Account {
     }
 
     /**
-     *
      * @param balance deposit balance to set
      * @throws ArgumentOutOfRange Deposit Balance must be positive
      */
@@ -75,15 +61,13 @@ public abstract class Account {
     }
 
 
-    /**
-     * class constructor
-     */
     public Account(){
     }
 
     /**
-     *Rounding mode to round towards the "nearest neighbor" unless both neighbors are equidistant, in which case, round towards the even neighbor
-     * @return calculated profit in BigDecimal with 4
+     *Rounding mode to round towards the "nearest neighbor" unless both neighbors are equidistant,
+     *  in which case, round towards the even neighbor
+     * @return calculated profit in BigDecimal
      */
     public BigDecimal calculateProfit(){
 
@@ -91,6 +75,11 @@ public abstract class Account {
         BigDecimal dD = new BigDecimal(durationDays);
 
         return ((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500) , RoundingMode.HALF_EVEN);
+    }
+
+    public int compareTo(Object obj){
+        Account acc = (Account)obj;
+            return calculateProfit().compareTo((acc.calculateProfit()));
     }
 
     public abstract BigDecimal getInterestRate();

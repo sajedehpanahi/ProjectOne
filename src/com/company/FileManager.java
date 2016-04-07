@@ -12,11 +12,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
- * Created by DotinSchool2 on 4/6/2016.
+ * <h1>File Manager Class</h1>
+ * This class parses the input xml file
+ * and writes output text file
+ *
+ * @author Sajedeh Panahi
+ * @version 1.0
+ * @since 4/6/2016.
  */
 public class FileManager {
 
-    public ArrayList<Object> parseDocument() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    public ArrayList<Account> parseDocument() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, ArgumentOutOfRange {
 
         boolean bCustomerNumber=false;
         boolean bDepositType=false;
@@ -25,7 +31,7 @@ public class FileManager {
 
 
 
-        ArrayList<Object> list = new ArrayList<Object>();
+        ArrayList<Account> list = new ArrayList<Account>();
 
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -82,18 +88,12 @@ public class FileManager {
                         EndElement endElement = event.asEndElement();
                         if(endElement.getName().getLocalPart().equalsIgnoreCase("deposit")){
                             Class<?> cls = Class.forName("com.company." + depositType);
-                            Object obj = cls.newInstance();
+                            Account account = (Account)cls.newInstance();
 
-                            Method setDurationDays = cls.getSuperclass().getDeclaredMethod("setDurationDays" , new Class[] {Integer.TYPE});
-                            setDurationDays.invoke(obj , durationDays);
-
-                            Method setDepositBalance = cls.getSuperclass().getDeclaredMethod("setDepositBalance" , new Class[] {BigDecimal.class});
-                            setDepositBalance.invoke(obj , depositBalance);
-
-                            Method setCustomerNumber = cls.getSuperclass().getDeclaredMethod("setCustomerNumber" , new Class[] {Integer.TYPE});
-                            setCustomerNumber.invoke(obj , customerNumber);
-
-                            list.add(obj);
+                            account.setCustomerNumber(customerNumber);
+                            account.setDepositBalance(depositBalance);
+                            account.setDurationDays(durationDays);
+                            list.add(account);
                         }
                         break;
                 }

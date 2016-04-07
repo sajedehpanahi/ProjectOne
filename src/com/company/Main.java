@@ -4,23 +4,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+
         FileManager fm = new FileManager();
         try {
-            ArrayList<Object> list =fm.parseDocument();
+            ArrayList<Account> accounts =fm.parseDocument();
 
-            for ( Object obj : list){
-                Class cls = obj.getClass();
-                Method calculateProfit = cls.getSuperclass().getDeclaredMethod("calculateProfit",new Class[] {});
-                BigDecimal profit = (BigDecimal)calculateProfit.invoke(obj, new Class[]{});
+            Collections.sort(accounts, Collections.reverseOrder());
 
-                Method getCustomerNumber = cls.getSuperclass().getDeclaredMethod("getCustomerNumber",new Class[] {});
-                int customerNumber = (Integer)getCustomerNumber.invoke(obj, new Class[]{});
-                System.out.println(customerNumber+"#"+profit);
+            for ( Account account : accounts){
+                System.out.println(account.getCustomerNumber() + "#" + account.calculateProfit());
             }
 
 
@@ -35,6 +32,8 @@ public class Main {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
+        } catch (ArgumentOutOfRange argumentOutOfRange) {
+            argumentOutOfRange.printStackTrace();
         }
 
 
