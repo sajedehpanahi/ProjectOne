@@ -3,21 +3,13 @@ package com.company;
 import java.math.BigDecimal;
 
 /**
- * <h1>Long Term Deposit Class</h1>
- * This class models long term deposit type
- * with 20% interest rate!
- *
  * @author Sajedeh Panahi
- * @version 1.0
- * @since 4/6/2016.
  */
-public class LongTerm extends Deposit {
-    /**
-     *
-     * @return BigDecimal This returns long term deposit type interest rate
-     */
+
+public class LongTerm extends DepositType {
+
     @Override
-    public BigDecimal getInterestRate(){
+    public BigDecimal getInterestRate() {
         return new BigDecimal("20");
     }
 }

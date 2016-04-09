@@ -1,96 +1,89 @@
 package com.company;
+
+import Exceptions.ArgumentOutOfRangeException;
+import Exceptions.DurationDaysOutOfRangeException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * <h1>Abstract Account Class</h1>
- *
  * @author Sajedeh Panahi
- * @version 1.0
- * @since 4/6/2016.
  */
-public abstract class Deposit implements Comparable<Deposit> {
 
-    private int customerNumber;
+public class Deposit implements Comparable<Deposit> {
+
+    private String customerNumber;
     private int durationDays;
     private BigDecimal depositBalance;
+    private BigDecimal payedInterest;
+    private BigDecimal interestRate;
 
-    static Deposit createDeposit(String depositType, int customerNumber, int durationDays, BigDecimal depositBalance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ArgumentOutOfRange, DurationDaysOutOfRange {
-        Class<?> cls = Class.forName("com.company." + depositType);
-        Deposit deposit = (Deposit)cls.newInstance();
+    public Deposit(String depositType, String customerNumber, int durationDays, BigDecimal depositBalance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ArgumentOutOfRangeException, DurationDaysOutOfRangeException {
 
-        deposit.setCustomerNumber(customerNumber);
-        deposit.setDepositBalance(depositBalance);
-        deposit.setDurationDays(durationDays);
-        return deposit;
+        setCustomerNumber(customerNumber);
+        setDepositBalance(depositBalance);
+        setDurationDays(durationDays);
+        setInterestRate(depositType);
+
+        calculateInterest();
     }
 
-    public int getCustomerNumber(){
+    public String getCustomerNumber() {
         return customerNumber;
     }
 
-    public void setCustomerNumber(int number){
-        customerNumber=number;
+    public void setCustomerNumber(String customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
-    public int getDurationDays(){
+    public int getDurationDays() {
         return durationDays;
     }
 
-    /**
-     *
-     * @param durationDays is duration  days in int that must be greater than 0
-     * @throws ArgumentOutOfRange on input error
-     */
-    public void setDurationDays(int durationDays) throws DurationDaysOutOfRange {
+    public void setDurationDays(int durationDays) throws DurationDaysOutOfRangeException {
 
-        if(durationDays > 0)
+        if (durationDays > 0)
             this.durationDays = durationDays;
         else
-            throw new DurationDaysOutOfRange("Duration Days must be greater than zero!");
+            throw new DurationDaysOutOfRangeException("Duration Days must be greater than zero!");
     }
 
-    /**
-     *
-     * @return deposit balance in BigDecimal( to handle very huge balance)
-     */
-    public BigDecimal getDepositBalance(){
+    public BigDecimal getDepositBalance() {
         return depositBalance;
     }
 
-    /**
-     * @param balance deposit balance to set
-     * @throws ArgumentOutOfRange Deposit Balance must be positive
-     */
-    public void setDepositBalance(BigDecimal balance) throws ArgumentOutOfRange {
+    public void setDepositBalance(BigDecimal balance) throws ArgumentOutOfRangeException {
 
-        if (balance.compareTo(new BigDecimal(0)) < 0){
-            throw new ArgumentOutOfRange("Deposit Balance must be positive!");
+        if (balance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ArgumentOutOfRangeException("Deposit Balance must be positive!");
         }
         this.depositBalance = balance;
     }
 
-
-    public Deposit(){
+    public BigDecimal getPayedInterest() {
+        return payedInterest;
     }
 
-    /**
-     *Rounding mode to round towards the "nearest neighbor" unless both neighbors are equidistant,
-     *  in which case, round towards the even neighbor
-     * @return calculated profit in BigDecimal
-     */
-    public BigDecimal calculateProfit(){
+    public void setPayedInterest(BigDecimal payedInterest) {
 
-        BigDecimal iR = getInterestRate();
-        BigDecimal dD = new BigDecimal(durationDays);
+        this.payedInterest = payedInterest;
+    }
 
-        return ((iR.multiply(dD)).multiply(depositBalance)).divide(new BigDecimal(36500) , RoundingMode.HALF_EVEN);
+    public void setInterestRate(String depositType) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        Class<?> clazz = Class.forName("com.company." + depositType);
+        DepositType depositTypeClass = (DepositType) clazz.newInstance();
+
+        this.interestRate = depositTypeClass.getInterestRate();
+    }
+
+    public void calculateInterest() {
+
+        BigDecimal durationDays = new BigDecimal(this.durationDays);
+        payedInterest = ((interestRate.multiply(durationDays)).multiply(depositBalance)).divide(new BigDecimal(36500), RoundingMode.HALF_EVEN);
     }
 
     public int compareTo(Deposit deposit) {
-        return calculateProfit().compareTo((deposit.calculateProfit()));
+        return payedInterest.compareTo((deposit.payedInterest));
     }
-
-    public abstract BigDecimal getInterestRate();
 }
 
