@@ -12,9 +12,33 @@
         <durationInDays>38</durationInDays>
     </deposit>
     <deposit>
+        <customernumber>938568</customernumber>
+        <depositType>ShortTerm</depositType>
+        <depositBalance>32000</depositBalance>
+        <durationInDays>0</durationInDays>
+    </deposit>
+    <deposit>
+        <customernumber>254684</customernumber>
+        <depositType>LoanSavings</depositType>
+        <depositBalance>32000</depositBalance>
+        <durationInDays>0</durationInDays>
+    </deposit>
+    <deposit>
         <customernumber>658951</customernumber>
         <depositType>LongTerm</depositType>
         <depositBalance>545966600000</depositBalance>
         <durationInDays>1000</durationInDays>
+    </deposit>
+    <deposit>
+        <customernumber>655342</customernumber>
+        <depositType>LongTerm</depositType>
+        <depositBalance>-20</depositBalance>
+        <durationInDays>1000</durationInDays>
+    </deposit>
+    <deposit>
+        <customernumber>658951</customernumber>
+        <depositType>ShortTerm</depositType>
+        <depositBalance>545966600000</depositBalance>
+        <durationInDays>45</durationInDays>
     </deposit>
 </deposits>

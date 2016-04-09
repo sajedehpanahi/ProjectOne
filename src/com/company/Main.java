@@ -18,9 +18,7 @@ public class Main {
 
             fm.writeOutputFile(deposits,"output.txt");
 
-        } catch (ClassNotFoundException e) {
-            System.out.println("unknown deposit type");
-        } catch (IllegalAccessException e) {
+        }  catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -33,6 +31,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
     }

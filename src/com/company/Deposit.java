@@ -15,7 +15,7 @@ public abstract class Deposit implements Comparable<Deposit> {
     private int durationDays;
     private BigDecimal depositBalance;
 
-    static Deposit createDeposit(String depositType, int customerNumber, int durationDays, BigDecimal depositBalance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ArgumentOutOfRange {
+    static Deposit createDeposit(String depositType, int customerNumber, int durationDays, BigDecimal depositBalance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ArgumentOutOfRange, DurationDaysOutOfRange {
         Class<?> cls = Class.forName("com.company." + depositType);
         Deposit deposit = (Deposit)cls.newInstance();
 
@@ -42,12 +42,12 @@ public abstract class Deposit implements Comparable<Deposit> {
      * @param durationDays is duration  days in int that must be greater than 0
      * @throws ArgumentOutOfRange on input error
      */
-    public void setDurationDays(int durationDays) throws ArgumentOutOfRange {
+    public void setDurationDays(int durationDays) throws DurationDaysOutOfRange {
 
         if(durationDays > 0)
             this.durationDays = durationDays;
         else
-            throw new ArgumentOutOfRange("Duration Days must be greater than zero!");
+            throw new DurationDaysOutOfRange("Duration Days must be greater than zero!");
     }
 
     /**

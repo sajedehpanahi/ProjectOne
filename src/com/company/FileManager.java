@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class FileManager {
 
-    public List<Deposit> parseDocument() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, ArgumentOutOfRange {
+    public List<Deposit> parseDocument() throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, ArgumentOutOfRange {
 
         boolean bCustomerNumber=false;
         boolean bDepositType=false;
@@ -83,7 +83,16 @@ public class FileManager {
                     case  XMLStreamConstants.END_ELEMENT:
                         EndElement endElement = event.asEndElement();
                         if("deposit".equalsIgnoreCase(endElement.getName().getLocalPart())){
-                            list.add(Deposit.createDeposit(depositType, customerNumber, durationDays, depositBalance));
+                            try {
+                                list.add(Deposit.createDeposit(depositType, customerNumber, durationDays, depositBalance));
+                            }catch (ArgumentOutOfRange ex){
+                                System.out.println("Error in field with customer number#"+ customerNumber + ": Deposit Balance must be positive!");
+
+                            }catch (DurationDaysOutOfRange ex) {
+                                System.out.println("Error in field with customer number#"+ customerNumber + ": Duration Days must be greater than zero!");
+                            }catch (ClassNotFoundException ex){
+                                System.out.println("Error in field with customer number#"+ customerNumber + ": Unknown deposit type");
+                            }continue;
                         }
                         break;
                 }
