@@ -17,14 +17,15 @@ public class Deposit implements Comparable<Deposit> {
     private BigDecimal depositBalance;
     private BigDecimal payedInterest;
     private BigDecimal interestRate;
+    private DepositType depositType;
 
     public Deposit(String depositType, String customerNumber, int durationDays, BigDecimal depositBalance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ArgumentOutOfRangeException, DurationDaysOutOfRangeException {
 
         setCustomerNumber(customerNumber);
         setDepositBalance(depositBalance);
         setDurationDays(durationDays);
-        setInterestRate(depositType);
-
+        setDepositType(depositType);
+        setInterestRate();
         calculateInterest();
     }
 
@@ -69,11 +70,15 @@ public class Deposit implements Comparable<Deposit> {
         this.payedInterest = payedInterest;
     }
 
-    public void setInterestRate(String depositType) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class<?> clazz = Class.forName("com.company." + depositType);
-        DepositType depositTypeClass = (DepositType) clazz.newInstance();
+    public void setInterestRate() {
 
-        this.interestRate = depositTypeClass.getInterestRate();
+        interestRate = depositType.getInterestRate();
+    }
+
+    public void setDepositType(String depositType) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+
+        Class<?> clazz = Class.forName("com.company." + depositType);
+        this.depositType =  (DepositType) clazz.newInstance();
     }
 
     public void calculateInterest() {
